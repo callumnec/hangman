@@ -10,11 +10,11 @@ class Game
   end
 
   def apply_guess(guess)
-    @guessed_characters << guess
+    @guessed_letters << guess
   end
 
   def letter_in_word?(letter)
-    @word_to_guess.any? { |e| e == letter }
+    @word_to_guess.chars.any? { |e| e == letter }
   end
 
   def remaining_lives
@@ -22,23 +22,23 @@ class Game
       .select { |letter| !letter_in_word?(letter) }
       .length
 
-    starting_number_of_lives - total_mismatches
+    @starting_number_of_lives - total_mismatches
   end
 
   def game_over?
-    remaining_lives <= 0 || is_game_won?
+    remaining_lives <= 0 || game_won?
   end
 
   def game_won?
-    @word_to_guess.all? { |letter| letter_has_been_guessed?(letter) }
+    @word_to_guess.chars.all? { |letter| letter_has_been_guessed?(letter) }
   end
 
   def letter_has_been_guessed?(letter)
     @guessed_letters.include?(letter)
   end
 
-  def guessed_characters
-    @guessed_characters.to_a
+  def guessed_letters
+    @guessed_letters.to_a
   end
 
 end

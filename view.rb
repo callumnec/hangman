@@ -21,6 +21,7 @@ class View
   end
 
   def display_current_game_status
+    puts "Lives remaining #{@game.remaining_lives}"
     puts "Current Guess:"
     display_current_guess
     puts "Guessed Letters"
@@ -35,6 +36,6 @@ class View
   end
 
   def display_guessed_letters
-    puts @game.guessed_characters.join(", ")
+    puts @game.guessed_letters.join(", ")
   end
 end
