@@ -1,4 +1,4 @@
-class Game
+class Model
   def initialize(starting_number_of_lives, word_to_guess)
     @starting_number_of_lives = starting_number_of_lives
     @word_to_guess = word_to_guess

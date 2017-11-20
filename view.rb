@@ -1,6 +1,6 @@
 class View
   def initialize(game)
-    @game = game
+    @model = game
   end
 
   def display_welcome
@@ -13,15 +13,25 @@ class View
 
   def display_defeat_message
     puts "You've run out of lives!"
-    puts "The word was #{@game.word_to_guess}"
+    puts "The word was #{@model.word_to_guess}"
   end
 
   def display_word_to_guess
-    puts @game.word_to_guess
+    puts @model.word_to_guess
+  end
+
+  def display_game_state
+    display_current_game_status
+
+    if @model.game_won?
+      display_victory_message
+    elsif @model.game_over?
+      display_defeat_message
+    end
   end
 
   def display_current_game_status
-    puts "Lives remaining #{@game.remaining_lives}"
+    puts "Lives remaining #{@model.remaining_lives}"
     puts "Current Guess:"
     display_current_guess
     puts "Guessed Letters"
@@ -29,13 +39,13 @@ class View
   end
 
   def display_current_guess
-    puts @game.word_to_guess
+    puts @model.word_to_guess
       .chars
-      .map { |letter| @game.letter_has_been_guessed?(letter) ? letter : "_" }
+      .map { |letter| @model.letter_has_been_guessed?(letter) ? letter : "_" }
       .join
   end
 
   def display_guessed_letters
-    puts @game.guessed_letters.join(", ")
+    puts @model.guessed_letters.join(", ")
   end
 end

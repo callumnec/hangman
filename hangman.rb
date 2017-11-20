@@ -9,23 +9,16 @@ class Hangman
     dictionary = Dictionary.new
     random_word = dictionary.sample
 
-    game = Game.new(6, random_word)
-    controller = Controller.new(game)
-    view = View.new(game)
+    model = Model.new(6, random_word)
+    controller = Controller.new(model)
+    view = View.new(model)
 
     view.display_welcome
-    while !game.game_over?
+    while !model.game_over?
       guess = controller.ask_for_guess
+      model.apply_guess(guess)
 
-      game.apply_guess(guess)
-
-      view.display_current_game_status
-
-      if game.game_won?
-        view.display_victory_message
-      elsif game.game_over?
-        view.display_defeat_message
-      end
+      view.display_game_state
     end
   end
 end
