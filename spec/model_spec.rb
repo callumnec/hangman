@@ -2,7 +2,7 @@
 require_relative '../model'
 
 describe Model do
-  let(:model) { Model.new(starting_number_of_lives: 6, word_to_guess: "alphabet") }
+  #let(:model) { Model.new(starting_number_of_lives: 6, word_to_guess: "alphabet") }
 
   context "in a game with 6 lives, and \"alphabet\" as the hidden word" do
     subject { Model.new(starting_number_of_lives: 6, word_to_guess: "alphabet") }
@@ -12,6 +12,7 @@ describe Model do
     end
 
     context "initially" do
+      #subject { model }
       it "should have six lives remaining" do
         expect(subject.remaining_lives).to eq(6)
       end
@@ -31,16 +32,27 @@ describe Model do
         expect(subject.game_won?).to be false
       end
     end
-  end
 
-  context "initially" do
+    context "after guessing \"a\"" do
+      before(:all) { subject.apply_guess("a") }
 
-  end
-  describe "word_to_guess" do
-    it "returns the random word used in the game" do
-      expect(model.word_to_guess).to eq("alphabet")
+      it "should have six lives remaining" do
+        subject.apply_guess("a")
+        expect(subject.remaining_lives).to eq(6)
+      end
+
+      it "should have only \"a\" guessed" do
+        before{subject.apply_guess("a")}
+        expect(subject.guessed_letters.length).to eq(1)
+        # it {is_expected.to be true}
+        expect(subject.letter_has_been_guessed?("a")).to be true
+        expect(subject.letter_has_been_guessed?("g")).to be false
+        expect(subject.letter_has_been_guessed?("z")).to be false
+      end
     end
+
   end
+
 end
 
 # describe Model do
