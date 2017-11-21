@@ -1,27 +1,19 @@
+require 'set'
+
 class Model
-  def initialize(starting_number_of_lives, word_to_guess)
+  attr_reader :word_to_guess, :guessed_letters
+
+  def initialize(starting_number_of_lives:, word_to_guess:)
     @starting_number_of_lives = starting_number_of_lives
     @word_to_guess = word_to_guess
     @guessed_letters = Set.new
-  end
-
-  def word_to_guess
-    @word_to_guess
   end
 
   def apply_guess(guess)
     @guessed_letters << guess
   end
 
-  def letter_in_word?(letter)
-    @word_to_guess.chars.any? { |e| e == letter }
-  end
-
   def remaining_lives
-    total_mismatches = @guessed_letters
-      .select { |letter| !letter_in_word?(letter) }
-      .length
-
     @starting_number_of_lives - total_mismatches
   end
 
@@ -37,8 +29,13 @@ class Model
     @guessed_letters.include?(letter)
   end
 
-  def guessed_letters
-    @guessed_letters.to_a
+  private
+
+  def total_mismatches
+    @guessed_letters.count { |letter| !letter_in_word?(letter) }
   end
 
+  def letter_in_word?(letter)
+    @word_to_guess.include?(letter)
+  end
 end
