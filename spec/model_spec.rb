@@ -1,53 +1,168 @@
 
 require_relative '../model'
 
+
+shared_examples "is unfinished" do
+  it "is not game over" do
+    expect(model.game_over?).to be false
+  end
+
+  it "is not won" do
+    expect(model.game_won?).to be false
+  end
+end
+
+shared_examples "has guesses" do |guesses|
+  it "has #{guesses.join(", ")} guessed" do
+    guesses.each do |guess|
+      expect(model.letter_has_been_guessed?(guess)).to be true
+    end
+  end
+end
+
+shared_examples "excludes guesses" do |guesses|
+  it "has #{guesses.join(", ")} not guessed" do
+    guesses.each do |guess|
+      expect(model.letter_has_been_guessed?(guess)).to be false
+    end
+  end
+end
+
 describe Model do
   let(:model) { Model.new(starting_number_of_lives: 6, word_to_guess: "alphabet") }
 
   context "in a game with 6 lives, and \"alphabet\" as the hidden word" do
-    it "should have the word to guess as \"alphabet\"" do
+    it "has the word to guess as \"alphabet\"" do
       expect(model.word_to_guess).to eq("alphabet")
     end
 
-    context "initially" do
-      it "should have six lives remaining" do
+    context "with nothing guessed" do
+      it "has six lives remaining" do
         expect(model.remaining_lives).to eq(6)
       end
 
-      it "should have no letters guessed" do
+      it "has zero letters guessed" do
         expect(model.guessed_letters).to be_empty
-        expect(model.letter_has_been_guessed?("a")).to be false
-        expect(model.letter_has_been_guessed?("g")).to be false
-        expect(model.letter_has_been_guessed?("z")).to be false
       end
 
-      it "should not be game over" do
-        expect(model.game_over?).to be false
+      include_examples "is unfinished"
+    end
+
+    context "with \"alphabet\" guessed" do
+      before { "alphabet".each_char { |chr| model.apply_guess(chr) }}
+
+      it "has six lives remaining" do
+        expect(model.remaining_lives).to eq(6)
       end
 
-      it "should not be won" do
+      it "has seven letters guessed" do
+        expect(model.guessed_letters.length).to eq(7)
+      end
+
+      it "is gameover" do
+        expect(model.game_over?).to be true
+      end
+
+      it "is won" do
+        expect(model.game_won?).to be true
+      end
+
+      include_examples "has guesses", "alphabet".chars
+    end
+
+    context "with \"zxcvnm\" guessed" do
+      before { "zxcvnm".each_char { |chr| model.apply_guess(chr) }}
+
+      it "has zero lives remaining" do
+        expect(model.remaining_lives).to eq(0)
+      end
+
+      it "has six letters guessed" do
+        expect(model.guessed_letters.length).to eq(6)
+      end
+
+      it "is gameover" do
+        expect(model.game_over?).to be true
+      end
+
+      it "is not won" do
         expect(model.game_won?).to be false
       end
+
+      include_examples "has guesses", "zxcvnm".chars
     end
 
-    context "after guessing \"a\"" do
+    context "with \"a\" guessed" do
       before { model.apply_guess("a") }
 
-      it "should have six lives remaining" do
-        model.apply_guess("a")
+      it "has six lives remaining" do
         expect(model.remaining_lives).to eq(6)
       end
 
-      it "should have only \"a\" guessed" do
+      it "has one letter guessed" do
         expect(model.guessed_letters.length).to eq(1)
-        expect(model.letter_has_been_guessed?("a")).to be true
-        expect(model.letter_has_been_guessed?("g")).to be false
-        expect(model.letter_has_been_guessed?("z")).to be false
       end
+
+      include_examples "is unfinished"
+      include_examples "has guesses", ["a"]
+      include_examples "excludes guesses", "bcd".chars
     end
 
-  end
+    context "with \"c\" guessed" do
+      before { model.apply_guess("c") }
 
+      it "has five lives remaining" do
+        expect(model.remaining_lives).to eq(5)
+      end
+
+      it "has one letter guessed" do
+        expect(model.guessed_letters.length).to eq(1)
+      end
+
+      include_examples "is unfinished"
+      include_examples "has guesses", ["c"]
+      include_examples "excludes guesses", "abd".chars
+
+    end
+
+    context "with \"a\" and \"c\" guessed" do
+      before do
+        model.apply_guess("a")
+        model.apply_guess("c")
+      end
+
+      it "has five lives remaining" do
+        expect(model.remaining_lives).to eq(5)
+      end
+
+      it "has one letter guessed" do
+        expect(model.guessed_letters.length).to eq(2)
+      end
+
+      include_examples "is unfinished"
+      include_examples "has guesses", ["a", "c"]
+      include_examples "excludes guesses", ["b", "d"]
+    end
+
+    context "with \"a\" guessed twice" do
+      before do
+        model.apply_guess("a")
+        model.apply_guess("a")
+      end
+
+      it "has six lives remaining" do
+        expect(model.remaining_lives).to eq(6)
+      end
+
+      it "has one letter guessed" do
+        expect(model.guessed_letters.length).to eq(1)
+      end
+
+      include_examples "is unfinished"
+      include_examples "has guesses", ["a"]
+      include_examples "excludes guesses", "bcd".chars
+    end
+  end
 end
 
 # describe Model do
