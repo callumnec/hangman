@@ -17,6 +17,11 @@ class View
     end
   end
 
+  def display_bad_input_message
+    puts "#{guess} has already been guessed!"
+    puts "Try something else"
+  end
+
   private
 
   def display_word_to_guess

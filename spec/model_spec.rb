@@ -1,6 +1,4 @@
-
 require_relative '../model'
-
 
 shared_examples "is unfinished" do
   it "is not game over" do
@@ -60,11 +58,11 @@ describe Model do
       end
 
       it "is gameover" do
-        expect(model.game_over?).to be true
+        expect(model).to be_game_over
       end
 
       it "is won" do
-        expect(model.game_won?).to be true
+        expect(model).to be_game_won
       end
 
       include_examples "has guesses", "alphabet".chars
@@ -122,7 +120,6 @@ describe Model do
       include_examples "is unfinished"
       include_examples "has guesses", ["c"]
       include_examples "excludes guesses", "abd".chars
-
     end
 
     context "with \"a\" and \"c\" guessed" do
@@ -164,35 +161,3 @@ describe Model do
     end
   end
 end
-
-# describe Model do
-#   let(:model) { Model.new(starting_number_of_lives: 6, word_to_guess: "alphabet") }
-#
-#   describe "#word_to_guess" do
-#     it "returns the random word used in the game" do
-#       expect(model.word_to_guess).to eq("alphabet")
-#     end
-#   end
-#
-#   describe "#word_to_guess2" do
-#     subject { model.word_to_guess }
-#
-#     context "returns the target word" do
-#       it { is_expected.to eq("alphabet") }
-#     end
-#   end
-#
-#   subject { model.guessed_letters }
-#
-#   context "it adds the guessed letter to the guessed letter set" do
-#     before { model.apply_guess("a") }
-#     it     { is_expected.to include("a") }
-#   end
-#
-#   it "adds the letter" do
-#     model.apply_guess("a")
-#     expect(model.guessed_letters.include?("a")).to be true
-#   end
-#
-#   describe "#"
-# end

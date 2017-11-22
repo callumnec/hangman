@@ -9,7 +9,6 @@ class Hangman
     random_word = dictionary.sample
 
     @model = Model.new(starting_number_of_lives: 6, word_to_guess: random_word)
-    @controller = Controller.new(@model)
     @view = View.new(@model)
   end
 
@@ -22,10 +21,20 @@ class Hangman
   private
 
   def take_turn
-    guess = @controller.ask_for_guess
+    guess = ask_for_guess
     @model.apply_guess(guess)
 
     @view.display_game_state
+  end
+
+  def ask_for_guess
+    loop do
+      guess = gets.chars.first
+
+      break guess unless @model.letter_has_been_guessed?(guess)
+
+      @view.display_bad_input_message
+    end
   end
 end
 
